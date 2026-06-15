@@ -33,6 +33,7 @@ button,textarea{font:inherit} button{border:0;cursor:pointer}.app{width:min(100%
 <nav class="bottom-nav" aria-label="メインメニュー"><button class="nav-btn active" type="button">ホーム</button><button class="nav-btn" type="button">掲示板</button><button class="post-create-btn" id="postCreateBtn" type="button" aria-label="投稿を書く"><svg viewBox="0 0 512 260" fill="none" aria-hidden="true"><path fill="#f2efe8" stroke="#08090d" stroke-width="8" d="M256 108C190 60 103 64 18 22c12 88 57 161 150 186 35-6 65-25 88-54Z"/><path fill="#08090d" stroke="#f2efe8" stroke-width="8" d="M256 108c66-48 153-44 238-86-12 88-57 161-150 186-35-6-65-25-88-54Z"/><path fill="#08090d" d="M70 101c51-29 99-23 141 15-34 42-77 51-128 27Z"/><path fill="#f2efe8" d="M301 116c42-38 90-44 141-15l-13 42c-51 24-94 15-128-27Z"/><path fill="#08090d" d="m53 56 67 29-42 8Zm62 94c29 7 55 3 78-13-11 29-34 47-68 53Z"/><path fill="#f2efe8" d="m459 56-67 29 42 8Zm-62 94c-29 7-55 3-78-13 11 29 34 47 68 53Z"/><path fill="#123c2d" d="m245 108 11-22 11 22-11 49Z"/></svg></button><button class="nav-btn" type="button">ランキング</button><button class="nav-btn" id="settingsBtn" type="button">設定</button></nav><div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const composerShell=document.getElementById('composerShell'),composer=document.getElementById('composer'),composerClose=document.getElementById('composerClose'),modePicker=document.getElementById('modePicker'),modeCurrent=document.getElementById('modeCurrent'),modeCurrentLabel=document.getElementById('modeCurrentLabel'),randomModeBtn=document.getElementById('randomModeBtn'),inputText=document.getElementById('inputText'),resultText=document.getElementById('resultText'),convertBtn=document.getElementById('convertBtn'),postBtn=document.getElementById('postBtn'),postCreateBtn=document.getElementById('postCreateBtn'),latestBtn=document.getElementById('latestBtn'),feed=document.getElementById('feed'),toast=document.getElementById('toast'),settingsBtn=document.getElementById('settingsBtn'),profileModal=document.getElementById('profileModal'),profileClose=document.getElementById('profileClose'),profileName=document.getElementById('profileName'),profileSave=document.getElementById('profileSave');let mode='lady',converted='';
+inputText.placeholder='どんな言葉でもいい、思いの丈を綴ってください';
 const modePrompts={lady:'次の愚痴や身の回りの出来事を、お嬢様口調の日本語に言いかえてください。汚い言葉や攻撃的な表現は、笑えるけれど人を直接傷つけない表現に変換してください。SNS掲示板の書き込みとして自然で、少し皮肉が効いた文章にしてください。返答は言いかえ後の文章だけにしてください。',poetic:'次の愚痴や身の回りの出来事を、詩的モードの日本語に言いかえてください。嫌な出来事を余韻のある短い文章にしつつ、読んだ人が少し笑える比喩を入れてください。人を直接傷つける表現は避けてください。返答は言いかえ後の文章だけにしてください。',comedy:'次の愚痴や身の回りの出来事を、コメディモードの日本語に言いかえてください。怒りや不満を、読んだ人が笑える掲示板の書き込みに変換してください。人を直接傷つける表現は避け、テンポよく短めにしてください。返答は言いかえ後の文章だけにしてください。',chuunibyou:'次の出来事を中二病モードの日本語に言いかえてください。日常の不満を、封印された力、宿命、闇、覚醒などを用いた大げさで格好つけた物語にしてください。読んだ人が笑える短い掲示板投稿にし、人を直接傷つける表現は避けてください。返答は変換後の文章だけにしてください。',business:'次の不満をビジネスメールモードの日本語に言いかえてください。怒りを極端に丁寧で冷静な業務連絡に変換し、「お世話になっております」などの表現を自然に使ってください。皮肉は含めても、人を直接攻撃しない短い文章にしてください。返答は変換後の文章だけにしてください。',samurai:'次の出来事を侍モードの日本語に言いかえてください。現代の理不尽を武士の戦いや不覚として語り、「拙者」「ござる」などを自然に使ってください。大げさで笑える短い掲示板投稿にし、人を直接傷つけないでください。返答は変換後の文章だけにしてください。',news:'次の出来事をニュースキャスターモードの日本語に言いかえてください。小さな日常の事件を、冷静で真面目なニュース速報や現場中継のように大げさに報道してください。簡潔で笑える文章にし、返答は変換後の文章だけにしてください。',philosopher:'次の出来事を哲学者モードの日本語に言いかえてください。日常の不満から、存在、自由、幸福、時間などについて無駄に深い問いを導いてください。難しそうなのに少し笑える短い文章にし、返答は変換後の文章だけにしてください。',demonlord:'次の出来事を魔王モードの日本語に言いかえてください。小さな不満を、世界征服を企む魔王の尊大な宣言や勇者への挑戦のように表現してください。大げさで笑える短い文章にし、人を直接傷つけないでください。返答は変換後の文章だけにしてください。',classical:'次の出来事を古文モードの日本語に言いかえてください。現代の愚痴を古文調にし、「いと」「けり」「なり」「をかし」などを読みやすく自然に使ってください。意味が伝わり、少し笑える短い文章にしてください。返答は変換後の文章だけにしてください。'};
 const modeLabels={lady:'お嬢様口調',poetic:'詩的モード',comedy:'コメディモード',chuunibyou:'中二病モード',business:'ビジネスメールモード',samurai:'侍モード',news:'ニュースキャスターモード',philosopher:'哲学者モード',demonlord:'魔王モード',classical:'古文モード'};
 const storedPostsKey='caasol-posts';
@@ -64,3 +65,14 @@ function escapeHtml(value){return value.replace(/&/g,'&amp;').replace(/</g,'&lt;
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+

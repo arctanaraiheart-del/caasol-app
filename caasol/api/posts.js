@@ -122,6 +122,3 @@ module.exports = async function handler(req, res) {
     sendError(res, 500, 'データベースに接続できませんでした。');
   }
 };
-
-  }
-};

@@ -1,4 +1,15 @@
-const allowedModes = new Set(['lady', 'poetic', 'comedy']);
+const allowedModes = new Set([
+  'lady',
+  'poetic',
+  'comedy',
+  'chuunibyou',
+  'business',
+  'samurai',
+  'news',
+  'philosopher',
+  'demonlord',
+  'classical'
+]);
 const allowedAvatars = new Set([
   'longnose',
   'roundears',

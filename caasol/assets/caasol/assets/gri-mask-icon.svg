@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">CAASOL mask icon</title>
+  <desc id="desc">A deep green rounded square app icon with a cream theatrical mask, gold trim, dark eyes, and a subtle red corner ribbon.</desc>
+  <defs>
+    <linearGradient id="greenBg" x1="144" y1="96" x2="844" y2="928" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4f8c5f"/>
+      <stop offset="0.46" stop-color="#246b3f"/>
+      <stop offset="1" stop-color="#0f4a2d"/>
+    </linearGradient>
+    <linearGradient id="maskLight" x1="174" y1="348" x2="838" y2="728" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff5cd"/>
+      <stop offset="0.52" stop-color="#f2e6b7"/>
+      <stop offset="1" stop-color="#fff7d7"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="155" y1="505" x2="459" y2="742" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8c621d"/>
+      <stop offset="0.42" stop-color="#e4c65f"/>
+      <stop offset="1" stop-color="#a77b28"/>
+    </linearGradient>
+    <linearGradient id="redBand" x1="675" y1="92" x2="955" y2="336" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9b1026"/>
+      <stop offset="1" stop-color="#e02139"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="124%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#06130d" flood-opacity="0.45"/>
+    </filter>
+    <filter id="innerSoft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="0.6"/>
+    </filter>
+    <clipPath id="iconClip">
+      <rect x="62" y="62" width="900" height="900" rx="118"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" rx="146" fill="#111923"/>
+  <rect x="42" y="42" width="940" height="940" rx="136" fill="#26313b"/>
+  <rect x="67" y="67" width="890" height="890" rx="116" fill="url(#greenBg)"/>
+  <g clip-path="url(#iconClip)">
+    <path d="M72 386C244 467 414 447 535 326C657 205 756 130 956 108L956 68L68 68L68 387Z" fill="#7fb083" opacity="0.38" filter="url(#innerSoft)"/>
+    <path d="M646 57L988 366L989 255L770 57Z" fill="#050708" opacity="0.88"/>
+    <path d="M691 68L961 312L961 392L615 68Z" fill="url(#redBand)" opacity="0.92"/>
+    <path d="M700 76L810 176L741 248L631 76Z" fill="#f6cad0" opacity="0.32"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <path d="M103 487
+      C178 557 269 575 376 548
+      C444 531 494 565 512 628
+      C530 565 580 531 648 548
+      C755 575 846 557 921 487
+      L921 604
+      C832 679 744 712 638 696
+      C576 687 536 718 512 784
+      C488 718 448 687 386 696
+      C280 712 192 679 103 604Z"
+      fill="#0a0d0e"/>
+    <path d="M100 385
+      C195 456 302 470 405 426
+      C466 400 497 431 512 502
+      C527 431 558 400 619 426
+      C722 470 829 456 924 385
+      L924 584
+      C836 663 742 692 639 672
+      C579 660 533 698 512 766
+      C491 698 445 660 385 672
+      C282 692 188 663 100 584Z"
+      fill="url(#maskLight)"/>
+    <path d="M101 386
+      C195 456 302 470 405 426
+      C466 400 497 431 512 502
+      L512 766
+      C491 698 445 660 385 672
+      C282 692 188 663 100 584Z"
+      fill="#fff1bf" opacity="0.7"/>
+    <path d="M100 385
+      C195 456 302 470 405 426
+      C466 400 497 431 512 502
+      C527 431 558 400 619 426
+      C722 470 829 456 924 385"
+      fill="none" stroke="#07090a" stroke-width="22" stroke-linecap="round"/>
+    <path d="M100 584
+      C188 663 282 692 385 672
+      C445 660 491 698 512 766
+      C533 698 579 660 639 672
+      C742 692 836 663 924 584"
+      fill="none" stroke="#07090a" stroke-width="22" stroke-linecap="round"/>
+    <path d="M112 398
+      C202 459 301 467 402 427
+      C463 403 497 435 512 505"
+      fill="none" stroke="url(#gold)" stroke-width="14" stroke-linecap="round"/>
+    <path d="M110 582
+      C195 651 283 676 382 657
+      C445 645 491 687 512 753"
+      fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M512 500L512 766" stroke="#d0b254" stroke-width="8" opacity="0.62"/>
+
+    <g>
+      <path d="M191 493
+        C254 464 331 465 394 500
+        C345 559 260 578 199 535Z"
+        fill="#080913"/>
+      <path d="M189 493
+        C254 464 331 465 394 500
+        C345 559 260 578 199 535Z"
+        fill="none" stroke="#b99032" stroke-width="15"/>
+      <path d="M392 500L356 446L360 532Z" fill="#fff1bf" stroke="#b99032" stroke-width="8"/>
+      <path d="M198 535L241 578L236 514Z" fill="#fff1bf" stroke="#b99032" stroke-width="8"/>
+      <path d="M219 501C272 482 323 485 366 503" stroke="#1e1e2a" stroke-width="7" opacity="0.5" stroke-linecap="round"/>
+    </g>
+
+    <g>
+      <path d="M631 500
+        C698 462 779 464 839 493
+        C823 550 742 587 652 556Z"
+        fill="#050712"/>
+      <path d="M631 500
+        C698 462 779 464 839 493
+        C823 550 742 587 652 556Z"
+        fill="none" stroke="#050708" stroke-width="16"/>
+      <path d="M650 501L701 449L695 527Z" fill="#050708"/>
+      <path d="M748 570L793 616L787 546Z" fill="#050708"/>
+      <path d="M667 516C723 489 777 489 817 500" stroke="#12182c" stroke-width="8" opacity="0.5" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <rect x="67" y="67" width="890" height="890" rx="116" fill="none" stroke="#070b0f" stroke-width="26"/>
+  <rect x="82" y="82" width="860" height="860" rx="104" fill="none" stroke="#34414b" stroke-width="7" opacity="0.75"/>
+</svg>

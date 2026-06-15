@@ -1,4 +1,12 @@
 const allowedModes = new Set(['lady', 'poetic', 'comedy']);
+const allowedAvatars = new Set([
+  'longnose',
+  'roundears',
+  'firebox',
+  'oneeye',
+  'boxhead',
+  'snail'
+]);
 
 function getSupabaseConfig() {
   const url = (process.env.SUPABASE_URL || '').replace(/\/+$/, '').trim();
@@ -42,7 +50,7 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const response = await fetch(
-        `${config.url}/rest/v1/posts?select=id,text,source,mode,created_at&order=created_at.desc&limit=100`,
+        `${config.url}/rest/v1/posts?select=id,text,source,mode,username,avatar,created_at&order=created_at.desc&limit=100`,
         { headers }
       );
       const data = await response.json();
@@ -60,6 +68,8 @@ module.exports = async function handler(req, res) {
     const text = typeof body.text === 'string' ? body.text.trim() : '';
     const source = typeof body.source === 'string' ? body.source.trim() : '';
     const mode = typeof body.mode === 'string' ? body.mode : '';
+    const username = typeof body.username === 'string' ? body.username.trim() : '';
+    const avatar = typeof body.avatar === 'string' ? body.avatar : '';
 
     if (!text || text.length > 500) {
       sendError(res, 400, '投稿本文は1文字以上500文字以内にしてください。');
@@ -76,6 +86,16 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    if (!username || username.length > 20) {
+      sendError(res, 400, '名前は1文字以上20文字以内にしてください。');
+      return;
+    }
+
+    if (!allowedAvatars.has(avatar)) {
+      sendError(res, 400, 'アイコンが正しくありません。');
+      return;
+    }
+
     const response = await fetch(`${config.url}/rest/v1/posts`, {
       method: 'POST',
       headers: {
@@ -85,7 +105,9 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         text,
         source: source || '非公開',
-        mode
+        mode,
+        username,
+        avatar
       })
     });
     const data = await response.json();
@@ -98,5 +120,8 @@ module.exports = async function handler(req, res) {
     res.status(201).json({ post: data[0] });
   } catch (error) {
     sendError(res, 500, 'データベースに接続できませんでした。');
+  }
+};
+
   }
 };

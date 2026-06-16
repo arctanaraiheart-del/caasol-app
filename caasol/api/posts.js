@@ -10,6 +10,7 @@ const allowedModes = new Set([
   'demonlord',
   'classical'
 ]);
+
 const allowedAvatars = new Set([
   'longnose',
   'roundears',

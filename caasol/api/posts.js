@@ -56,6 +56,7 @@ module.exports = async function handler(req, res) {
 
   const headers = {
     apikey: config.secretKey,
+    Authorization: `Bearer ${config.secretKey}`,
     'Content-Type': 'application/json'
   };
 

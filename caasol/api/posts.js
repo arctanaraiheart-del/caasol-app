@@ -90,7 +90,7 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const { response, data } = await fetchJson(
-        `${config.url}/rest/v1/posts?select=id,text,source,mode,username,avatar,created_at&order=created_at.desc&limit=100`,
+        `${config.url}/rest/v1/posts?select=id,text,source,mode,username,avatar,created_at&hidden=eq.false&order=created_at.desc&limit=100`,
         { headers }
       );
 
@@ -120,7 +120,7 @@ module.exports = async function handler(req, res) {
       let commentRows = [];
       try {
         const commentResult = await fetchJson(
-          `${config.url}/rest/v1/post_comments?select=id,post_id,text,avatar,created_at&post_id=in.(${postIds})&order=created_at.asc`,
+          `${config.url}/rest/v1/post_comments?select=id,post_id,text,avatar,created_at&post_id=in.(${postIds})&hidden=eq.false&order=created_at.asc`,
           { headers }
         );
         if (commentResult.response.ok) {

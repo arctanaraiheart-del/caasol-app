@@ -20,6 +20,9 @@ const allowedAvatars = new Set([
   'snail'
 ]);
 
+const APP_PAUSED = true;
+const PAUSE_MESSAGE = 'The app is temporarily paused.';
+
 function getSupabaseConfig() {
   const url = (process.env.SUPABASE_URL || '').replace(/\/+$/, '').trim();
   const secretKey = (process.env.SUPABASE_SECRET_KEY || '').trim();
@@ -38,6 +41,12 @@ function sendError(res, status, message) {
 module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Cache-Control', 'no-store');
+
+  if (APP_PAUSED) {
+    res.setHeader('Retry-After', '3600');
+    sendError(res, 503, PAUSE_MESSAGE);
+    return;
+  }
 
   if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');

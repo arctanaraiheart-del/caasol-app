@@ -20,8 +20,10 @@ const allowedAvatars = new Set([
   'snail'
 ]);
 
-const APP_PAUSED = true;
+const APP_PAUSED = false;
 const PAUSE_MESSAGE = 'The app is temporarily paused.';
+const HIDDEN_SOURCE = 'hidden';
+const FALLBACK_USERNAME = 'anonymous';
 
 function getSupabaseConfig() {
   const url = (process.env.SUPABASE_URL || '').replace(/\/+$/, '').trim();
@@ -56,7 +58,7 @@ function normalizeMessage(message) {
     id: message.id,
     boardId: message.board_id,
     text: message.text,
-    source: message.source || '非公開',
+    source: message.source || HIDDEN_SOURCE,
     mode: message.mode,
     username: message.username,
     avatar: message.avatar,
@@ -104,7 +106,7 @@ module.exports = async function handler(req, res) {
       const boardData = await boardsResponse.json();
 
       if (!boardsResponse.ok) {
-        sendError(res, boardsResponse.status, boardData.message || '掲示板を取得できませんでした。');
+        sendError(res, boardsResponse.status, boardData.message || 'Failed to fetch boards.');
         return;
       }
 
@@ -121,7 +123,7 @@ module.exports = async function handler(req, res) {
       const messageData = await messagesResponse.json();
 
       if (!messagesResponse.ok) {
-        sendError(res, messagesResponse.status, messageData.message || '掲示板の書き込みを取得できませんでした。');
+        sendError(res, messagesResponse.status, messageData.message || 'Failed to fetch board messages.');
         return;
       }
 
@@ -147,32 +149,28 @@ module.exports = async function handler(req, res) {
     const title = typeof body.title === 'string' ? body.title.trim() : '';
     const note = typeof body.note === 'string' ? body.note.trim() : '';
     const mode = typeof body.mode === 'string' ? body.mode : '';
-    const username = typeof body.username === 'string' ? body.username.trim() : '';
+    const usernameInput = typeof body.username === 'string' ? body.username.trim() : '';
+    const username = usernameInput && usernameInput.length <= 20 ? usernameInput : FALLBACK_USERNAME;
     const avatar = typeof body.avatar === 'string' ? body.avatar : '';
 
     if (!allowedModes.has(mode)) {
-      sendError(res, 400, '掲示板モードが正しくありません。');
-      return;
-    }
-
-    if (!username || username.length > 20) {
-      sendError(res, 400, '名前は1文字以上20文字以内にしてください。');
+      sendError(res, 400, 'Invalid mode.');
       return;
     }
 
     if (!allowedAvatars.has(avatar)) {
-      sendError(res, 400, 'アイコンが正しくありません。');
+      sendError(res, 400, 'Invalid avatar.');
       return;
     }
 
     if (boardId) {
       if (!text || text.length > 500) {
-        sendError(res, 400, '書き込みは1文字以上500文字以内にしてください。');
+        sendError(res, 400, 'Text must be between 1 and 500 characters.');
         return;
       }
 
       if (source.length > 240) {
-        sendError(res, 400, '元ネタは240文字以内にしてください。');
+        sendError(res, 400, 'Source must be 240 characters or fewer.');
         return;
       }
 
@@ -185,7 +183,7 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({
           board_id: boardId,
           text,
-          source: source || '非公開',
+          source: source || HIDDEN_SOURCE,
           mode,
           username,
           avatar
@@ -194,7 +192,7 @@ module.exports = async function handler(req, res) {
       const messageData = await messageResponse.json();
 
       if (!messageResponse.ok) {
-        sendError(res, messageResponse.status, messageData.message || '書き込みを保存できませんでした。');
+        sendError(res, messageResponse.status, messageData.message || 'Failed to save board message.');
         return;
       }
 
@@ -203,12 +201,12 @@ module.exports = async function handler(req, res) {
     }
 
     if (!title || title.length > 40) {
-      sendError(res, 400, '掲示板のタイトルは1文字以上40文字以内にしてください。');
+      sendError(res, 400, 'Title must be between 1 and 40 characters.');
       return;
     }
 
     if (note.length > 120) {
-      sendError(res, 400, '掲示板の説明は120文字以内にしてください。');
+      sendError(res, 400, 'Note must be 120 characters or fewer.');
       return;
     }
 
@@ -229,12 +227,12 @@ module.exports = async function handler(req, res) {
     const boardData = await boardResponse.json();
 
     if (!boardResponse.ok) {
-      sendError(res, boardResponse.status, boardData.message || '掲示板を保存できませんでした。');
+      sendError(res, boardResponse.status, boardData.message || 'Failed to save board.');
       return;
     }
 
     res.status(201).json({ board: normalizeBoard(boardData[0]) });
   } catch (error) {
-    sendError(res, 500, '掲示板データベースに接続できませんでした。');
+    sendError(res, 500, 'Server error while handling boards.');
   }
 };

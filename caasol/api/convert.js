@@ -1,4 +1,4 @@
-﻿const APP_PAUSED = true;
+﻿const APP_PAUSED = false;
 const PAUSE_MESSAGE = 'The app is temporarily paused.';
 
 module.exports = async function handler(req, res) {
@@ -56,3 +56,4 @@ module.exports = async function handler(req, res) {
   } catch (err) {
     res.status(500).json({ error: { message: err.message } });
   }
+};

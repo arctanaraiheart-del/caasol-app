@@ -20,8 +20,10 @@ const allowedAvatars = new Set([
   'snail'
 ]);
 
-const APP_PAUSED = true;
+const APP_PAUSED = false;
 const PAUSE_MESSAGE = 'The app is temporarily paused.';
+const HIDDEN_SOURCE = 'hidden';
+const FALLBACK_USERNAME = 'anonymous';
 
 function getSupabaseConfig() {
   const url = (process.env.SUPABASE_URL || '').replace(/\/+$/, '').trim();
@@ -78,7 +80,7 @@ module.exports = async function handler(req, res) {
       const data = await response.json();
 
       if (!response.ok) {
-        sendError(res, response.status, data.message || '投稿を取得できませんでした。');
+        sendError(res, response.status, data.message || 'Failed to fetch posts.');
         return;
       }
 
@@ -90,31 +92,27 @@ module.exports = async function handler(req, res) {
     const text = typeof body.text === 'string' ? body.text.trim() : '';
     const source = typeof body.source === 'string' ? body.source.trim() : '';
     const mode = typeof body.mode === 'string' ? body.mode : '';
-    const username = typeof body.username === 'string' ? body.username.trim() : '';
+    const usernameInput = typeof body.username === 'string' ? body.username.trim() : '';
+    const username = usernameInput && usernameInput.length <= 20 ? usernameInput : FALLBACK_USERNAME;
     const avatar = typeof body.avatar === 'string' ? body.avatar : '';
 
     if (!text || text.length > 500) {
-      sendError(res, 400, '投稿本文は1文字以上500文字以内にしてください。');
+      sendError(res, 400, 'Text must be between 1 and 500 characters.');
       return;
     }
 
     if (source.length > 500) {
-      sendError(res, 400, '元ネタは500文字以内にしてください。');
+      sendError(res, 400, 'Source must be 500 characters or fewer.');
       return;
     }
 
     if (!allowedModes.has(mode)) {
-      sendError(res, 400, '投稿モードが正しくありません。');
-      return;
-    }
-
-    if (!username || username.length > 20) {
-      sendError(res, 400, '名前は1文字以上20文字以内にしてください。');
+      sendError(res, 400, 'Invalid mode.');
       return;
     }
 
     if (!allowedAvatars.has(avatar)) {
-      sendError(res, 400, 'アイコンが正しくありません。');
+      sendError(res, 400, 'Invalid avatar.');
       return;
     }
 
@@ -126,7 +124,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         text,
-        source: source || '非公開',
+        source: source || HIDDEN_SOURCE,
         mode,
         username,
         avatar
@@ -135,12 +133,12 @@ module.exports = async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      sendError(res, response.status, data.message || '投稿を保存できませんでした。');
+      sendError(res, response.status, data.message || 'Failed to save post.');
       return;
     }
 
     res.status(201).json({ post: data[0] });
   } catch (error) {
-    sendError(res, 500, 'データベースに接続できませんでした。');
+    sendError(res, 500, 'Server error while handling posts.');
   }
 };

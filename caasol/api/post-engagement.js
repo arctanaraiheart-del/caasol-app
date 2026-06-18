@@ -71,7 +71,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    if (!/^\d+$/.test(postId)) {
+    if (postId.length > 80) {
       sendError(res, 400, 'Invalid postId.');
       return;
     }
@@ -115,7 +115,7 @@ module.exports = async function handler(req, res) {
             Prefer: 'return=representation'
           },
           body: JSON.stringify({
-            post_id: Number(postId),
+            post_id: postId,
             reaction_type: reactionType,
             client_id: clientId
           })
@@ -163,7 +163,7 @@ module.exports = async function handler(req, res) {
         Prefer: 'return=representation'
       },
       body: JSON.stringify({
-        post_id: Number(postId),
+        post_id: postId,
         text: comment,
         username,
         avatar

@@ -1,5 +1,14 @@
-﻿module.exports = async function handler(req, res) {
+﻿const APP_PAUSED = true;
+const PAUSE_MESSAGE = 'The app is temporarily paused.';
+
+module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
+
+  if (APP_PAUSED) {
+    res.setHeader('Retry-After', '3600');
+    res.status(503).json({ error: { message: PAUSE_MESSAGE } });
+    return;
+  }
 
   if (req.method !== 'POST') {
     res.status(405).json({ error: { message: 'Method Not Allowed' } });
@@ -47,4 +56,3 @@
   } catch (err) {
     res.status(500).json({ error: { message: err.message } });
   }
-};

@@ -100,7 +100,7 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const boardsResponse = await fetch(
-        `${config.url}/rest/v1/boards?select=id,title,note,mode,username,avatar,created_at&order=created_at.desc&limit=100`,
+        `${config.url}/rest/v1/boards?select=id,title,note,mode,username,avatar,created_at&closed=eq.false&order=created_at.desc&limit=100`,
         { headers }
       );
       const boardData = await boardsResponse.json();
@@ -117,7 +117,7 @@ module.exports = async function handler(req, res) {
 
       const boardIds = boardData.map(board => board.id).join(',');
       const messagesResponse = await fetch(
-        `${config.url}/rest/v1/board_messages?select=id,board_id,text,source,mode,username,avatar,created_at&board_id=in.(${boardIds})&order=created_at.desc&limit=1000`,
+        `${config.url}/rest/v1/board_messages?select=id,board_id,text,source,mode,username,avatar,created_at&board_id=in.(${boardIds})&hidden=eq.false&order=created_at.desc&limit=1000`,
         { headers }
       );
       const messageData = await messagesResponse.json();
@@ -171,6 +171,22 @@ module.exports = async function handler(req, res) {
 
       if (source.length > 240) {
         sendError(res, 400, 'Source must be 240 characters or fewer.');
+        return;
+      }
+
+      const boardCheckResponse = await fetch(
+        `${config.url}/rest/v1/boards?select=id,closed&id=eq.${encodeURIComponent(boardId)}&limit=1`,
+        { headers }
+      );
+      const boardCheckData = await boardCheckResponse.json();
+
+      if (!boardCheckResponse.ok) {
+        sendError(res, boardCheckResponse.status, boardCheckData.message || 'Failed to check board status.');
+        return;
+      }
+
+      if (!boardCheckData.length || boardCheckData[0].closed) {
+        sendError(res, 403, 'This board is closed.');
         return;
       }
 
